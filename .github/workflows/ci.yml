@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # Fast: syntax check + static binary install (~2 min)
+  test-quick:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Syntax check + install_tools.sh
+        run: |
+          docker run --rm -v "${{ github.workspace }}:/work" centos:6 bash -c '
+            set -euo pipefail
+            # Fix yum repos (CentOS 6 EOL)
+            sed -i "s|^mirrorlist=|#mirrorlist=|g" /etc/yum.repos.d/CentOS-Base.repo
+            sed -i "s|^#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g" /etc/yum.repos.d/CentOS-Base.repo
+            yum install -y zsh tar gzip
+
+            cd /work
+            echo "=== zsh version ==="
+            zsh --version
+
+            echo "=== syntax check ==="
+            zsh -n zshrc
+
+            echo "=== load test ==="
+            # zshrc exits non-zero when ~/.zshrc.local is absent (expected)
+            zsh -c "emulate zsh; source ./zshrc" > /tmp/out 2>&1 || true
+            cat /tmp/out
+            if grep -qi "parse error\|syntax error" /tmp/out; then
+              echo "FAIL: zshrc has syntax errors"
+              exit 1
+            fi
+
+            echo "=== install_tools.sh ==="
+            bash install_tools.sh /usr/local/bin
+
+            echo "=== verify tools ==="
+            fzf --version
+            rg --version | head -1
+            fd --version
+            delta --version
+          '
+
+  # Slow: full source build (~15-20 min)
+  test-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build from source on CentOS 6
+        run: |
+          docker run --rm -v "${{ github.workspace }}:/work" centos:6 bash -c '
+            set -euo pipefail
+            # Fix yum repos (CentOS 6 EOL)
+            sed -i "s|^mirrorlist=|#mirrorlist=|g" /etc/yum.repos.d/CentOS-Base.repo
+            sed -i "s|^#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g" /etc/yum.repos.d/CentOS-Base.repo
+            yum install -y gcc make tar gzip bison
+
+            cd /work
+            bash install_build.sh /opt/local
+
+            export PATH="/opt/local/bin:$PATH"
+            export LD_LIBRARY_PATH="/opt/local/lib:${LD_LIBRARY_PATH:-}"
+            echo "=== verify ==="
+            tmux -V
+            vim --version | head -2
+          '
