@@ -1,0 +1,4 @@
+export PATH="$HOME/.local/bin:$PATH"
+
+autoload bashcompinit && bashcompinit
+autoload -Uz compinit && compinit
