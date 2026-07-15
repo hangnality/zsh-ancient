@@ -1,3 +1,4 @@
+export TZ=UTC
 export PATH="$HOME/.local/bin:$PATH"
 
 autoload bashcompinit && bashcompinit
