@@ -17,7 +17,7 @@ trap 'rm -rf "$TMP_DIR"' EXIT
 NCURSES_VERSION="6.6"
 LIBEVENT_VERSION="2.0.22-stable"
 TMUX_VERSION="3.7b"
-VIM_VERSION="master"
+VIM_VERSION="9.2.0782"
 
 # ---------------------------------------------------------------------------
 # URLs
@@ -92,10 +92,10 @@ cd /
 # ---------------------------------------------------------------------------
 # vim
 # ---------------------------------------------------------------------------
-info "Building vim (latest) ..."
-download "https://github.com/vim/vim/archive/refs/heads/master.tar.gz" "$TMP_DIR/vim.tar.gz"
+info "Building vim ${VIM_VERSION} ..."
+download "https://github.com/vim/vim/archive/refs/tags/v${VIM_VERSION}.tar.gz" "$TMP_DIR/vim.tar.gz"
 tar xzf "$TMP_DIR/vim.tar.gz" -C "$TMP_DIR"
-cd "$TMP_DIR/vim-master"
+cd "$TMP_DIR/vim-${VIM_VERSION}"
 export C_INCLUDE_PATH="$PREFIX/include"
 export LIBRARY_PATH="$PREFIX/lib"
 CFLAGS="-I$PREFIX/include" \

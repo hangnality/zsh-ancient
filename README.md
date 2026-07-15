@@ -53,7 +53,7 @@ Make sure the install directory is in your PATH (add to `~/.zshrc.local`):
 export PATH="$HOME/.local/bin:$PATH"
 ```
 
-## Optional: build from source (vim, tmux, git)
+## Optional: build from source (vim, tmux)
 
 For tools that don't ship static binaries, `install_build.sh` compiles them from source into `~/.local`. It also builds their dependencies (ncurses, libevent) locally — no root or system package manager needed.
 
@@ -62,7 +62,7 @@ For tools that don't ship static binaries, `install_build.sh` compiles them from
 | ncurses  | 6.6     | Dependency for tmux and vim |
 | libevent | 2.0.22  | Dependency for tmux         |
 | tmux     | 3.7b    |                             |
-| vim      | latest  | `--with-features=huge`      |
+| vim      | 9.2.0782 | `--with-features=huge`      |
 
 ```bash
 # Build everything into ~/.local (requires gcc + make)
