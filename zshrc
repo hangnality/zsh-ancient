@@ -44,10 +44,9 @@ _git_prompt_info() {
 
 setopt prompt_subst
 
-# 2-line prompt: user@host:path (git) \n ❯
-PROMPT='%F{blue}%n%f@%F{magenta}%m%f:%F{yellow}%~%f$(_git_prompt_info)
+# 2-line prompt: [HH:MM:SS] user@host:path (git) \n ❯
+PROMPT='%F{248}[%D{%H:%M:%S}]%f %F{blue}%n%f@%F{magenta}%m%f:%F{yellow}%~%f$(_git_prompt_info)
 %(?:%F{green}:%F{red})❯%f '
-RPROMPT='%F{242}%D{%H:%M:%S}%f'
 
 # ---------------------------------------------------------------------------
 # Keybindings (emacs mode)
